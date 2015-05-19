@@ -1,5 +1,4 @@
 from kivy.app import App
-from kivy.garden.ddd import View
 from kivy.lib import osc
 from kivy.clock import Clock
 from kivy.properties import ListProperty
@@ -10,7 +9,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.carousel import Carousel
 from kivy.factory import Factory
 
-import ddd  # noqa
+from ddd import View  # noqa
 
 Factory.register('ParticleSystem',
                  module='kivy.garden.particlesystem.particlesystem')
