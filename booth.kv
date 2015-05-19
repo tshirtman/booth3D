@@ -10,6 +10,8 @@ FloatLayout:
         pos_hint: {'center': (self.pos_x, self.pos_y)}
     Label:
         text: '%s' % round(app.angle, 2)
+        size_hint: None, None
+        size: self.texture_size
 
 <Container>:
     View:

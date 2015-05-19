@@ -64,8 +64,8 @@ class Booth(App):
             self.angle = data[-1]
             return
 
-        if abs(self.data[-1][-1] - data[-1]) > .5:
-            if data[-1] < .5:
+        if abs(self.data[-2][-1] - data[-1]) > .5:
+            if data[-1] < 0:
                 self.turn_count += 1
             else:
                 self.turn_count -= 1
