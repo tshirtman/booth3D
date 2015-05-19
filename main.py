@@ -115,17 +115,16 @@ class TwizCarousel(Carousel):
     __flag = BooleanProperty(False)
 
     def on_angle(self, *args):
-        if self.__flag:
-            return
-
         if self.angle > self.angle_offset + self.angle_rotation_trigger:
             self.angle_offset = self.angle
-            self.__flag = True
-            self.load_next()
+            if not self.__flag:
+                self.__flag = True
+                self.load_next()
         elif self.angle < self.angle_offset - self.angle_rotation_trigger:
             self.angle_offset = self.angle
-            self.__flag = True
-            self.load_previous()
+            if not self.__flag:
+                self.__flag = True
+                self.load_previous()
 
     def reset_flag(self, *args):
         self.__flag = False

@@ -45,12 +45,12 @@ FloatLayout:
         opacity: 0
         on_index: self.reset_flag()
         angle: app.angle
-        angle_rotation_trigger: .05
+        angle_rotation_trigger: .1
         loop: True
         on_parent:
             for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
             for x in glob('data/media/*.PNG'): self.add_widget(Image(source=x))
-            for x in glob('data/media/*.mov'): self.add_widget(Video(source=x, state='play'))
+            #for x in glob('data/media/*.mov'): self.add_widget(Video(source=x))
         pos_hint: {'right': .8, 'center_y': .7}
         size_hint: None, None
         size: 500, 400
