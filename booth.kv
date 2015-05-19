@@ -1,0 +1,23 @@
+FloatLayout:
+    ParticleSystem:
+        pos_hint: {'center': (.5, .5)}
+        config: 'data/particles.pex'
+
+    Container:
+        id: container
+        pos_x: .5
+        pos_y: -1
+        pos_hint: {'center': (self.pos_x, self.pos_y)}
+    Label:
+        text: '%s' % round(app.angle, 2)
+
+<Container>:
+    View:
+        scene: 'data/bouteille1.obj'
+        display_all: True
+        obj_rotation: 0, app.angle * 360, 0
+        cam_translation: 0, -3, -9
+        obj_scale: 3
+        light_sources:
+            {x: ([float(y) * 15 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
+
