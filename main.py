@@ -59,10 +59,10 @@ class Booth(App):
 
         diff = max(diff, data[2] - 1.0)
 
-        if diff > SHOW_THRESHOLD or abs(data[2] - Z) > SHOW_THRESHOLD:
+        if diff > SHOW_THRESHOLD or - (data[2] - Z) > SHOW_THRESHOLD:
             self.show_container()
 
-        elif diff < HIDE_THRESHOLD and abs(data[2] - Z) < HIDE_THRESHOLD / 10:
+        elif diff < HIDE_THRESHOLD and - (data[2] - Z) < HIDE_THRESHOLD / 10:
             Clock.schedule_once(self.hide_container, TIMEOUT)
 
         if len(self.data) < 2:
