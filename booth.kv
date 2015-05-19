@@ -43,6 +43,7 @@ FloatLayout:
     TwizCarousel:
         id: carousel
         opacity: 0
+        on_index: self.reset_flag()
         angle: app.angle
         angle_rotation_trigger: .05
         loop: True
