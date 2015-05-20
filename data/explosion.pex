@@ -6,7 +6,7 @@
   <emitterType value="0"/>
   <maxParticles value="140"/>
   <particleLifeSpan value="2.66"/>
-  <particleLifespanVariance value="2.8"/>
+  <particleLifespanVariance value="2.5"/>
   <startParticleSize value="39"/>
   <startParticleSizeVariance value="48"/>
   <finishParticleSize value="45"/>
