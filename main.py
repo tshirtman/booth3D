@@ -94,12 +94,12 @@ class Booth(App):
             a.bind(on_complete=self.display_carousel)
             a.start(cont)
         else:
-            Animation.stop_all(cont.ids.carousel)
+            Animation.stop_all(cont.ids.carousel, 'opacity')
             Animation(opacity=0, d=.2, t='out_quad').start(cont.ids.carousel)
             Animation(pos_y=-.5, t='out_quad').start(cont)
 
     def display_carousel(self, animation, container, *args):
-        Animation.stop_all(container.ids.carousel)
+        Animation.stop_all(container.ids.carousel, 'opacity')
         Animation(opacity=1, d=.5, t='out_quad').start(container.ids.carousel)
 
 
