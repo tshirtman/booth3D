@@ -75,3 +75,11 @@ FloatLayout:
             obj_scale: 3
             light_sources:
                 {x: ([float(y) * 15 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
+
+    ProgressiveLabel:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+        target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ''
+        size_hint: None, None
+        pos_hint: {'x': .5, 'y': .5}

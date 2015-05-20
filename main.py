@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 from kivy.app import App
 from kivy.lib import osc
 from kivy.clock import Clock
@@ -10,6 +12,7 @@ from kivy.uix.carousel import Carousel
 from kivy.factory import Factory
 
 from ddd import View  # noqa
+import progressivelabel  # noqa
 
 Factory.register('ParticleSystem',
                  module='kivy.garden.particlesystem.particlesystem')
@@ -36,6 +39,12 @@ class Booth(App):
     display_container = BooleanProperty(False)
 
     def build(self):
+        self.titles_list = [
+            u"DU PLAISIR POUR VOTRE PEAU",
+            u"RÉALISEZ VOTRE DIAGNOSTIC",
+            u"UNE PEAU IDÉALE",
+            u"NOTRE SAVOIR FAIRE"
+        ]
         super(Booth, self).build()
         self.oscid = oscid = osc.listen(ipAddr='0.0.0.0', port=8000)
         osc.bind(oscid, self.update_data, '/update')
