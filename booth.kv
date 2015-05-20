@@ -4,6 +4,7 @@
 #:import FXAAEffect kivy.uix.effectwidget.FXAAEffect
 #:import HorizontalBlurEffect kivy.uix.effectwidget.HorizontalBlurEffect
 #:import VerticalBlurEffect kivy.uix.effectwidget.VerticalBlurEffect
+#:import C kivy.utils.get_color_from_hex
 
 FloatLayout:
     ParticleSystem:
@@ -54,7 +55,7 @@ FloatLayout:
             for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
             for x in glob('data/media/*.PNG'): self.add_widget(Image(source=x))
             #for x in glob('data/media/*.mov'): self.add_widget(Video(source=x))
-        pos_hint: {'right': .8, 'center_y': .7}
+        pos_hint: {'right': .9, 'center_y': .4}
         size_hint: None, None
         size: 500, 400
 
@@ -77,9 +78,32 @@ FloatLayout:
                 {x: ([float(y) * 15 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
 
     ProgressiveLabel:
+        line_interval: 8
         canvas.before:
             Color:
                 rgba: 1, 1, 1, 1
-        target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ''
+
+        canvas.after:
+            Line:
+                points: root.center_x, self.top - self.line_interval * 2, self.x - 10, self.top - self.line_interval * 2
+                width: 1.5
+                cap: 'none'
+
+            Line:
+                points: root.center_x, self.top - self.line_interval, self.x - 10, self.top - self.line_interval
+                width: 1.2
+                cap: 'none'
+
+            Line:
+                points: root.center_x, self.top, self.x - 10, self.top
+                width: 1
+                cap: 'none'
+
+        target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ' '
         size_hint: None, None
-        pos_hint: {'x': .5, 'y': .5}
+        size: self.texture_size
+        pos_hint: {'x': .65, 'y': .6}
+        font_name: 'data/MyriadPro-Regular.otf'
+        font_size: '40sp'
+        interval: .001
+        color: C('C69C6D')
