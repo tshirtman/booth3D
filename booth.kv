@@ -50,6 +50,7 @@ FloatLayout:
         source: 'data/ARTWORK/media_glass_container_vert.png'
         center_x: self.size and carousel.center_x
         y: carousel.y - 80
+        color: C('C69C6D')
 
     TwizCarousel:
         id: carousel
@@ -62,7 +63,7 @@ FloatLayout:
             for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
             for x in glob('data/media/*.png'): self.add_widget(Image(source=x))
             #for x in glob('data/media/*.mov'): self.add_widget(Video(source=x))
-        pos_hint: {'right': .9, 'center_y': .4 - root.carousel_y_decal}
+        pos_hint: {'right': .9, 'center_y': .35 - root.carousel_y_decal}
         size_hint: None, None
         size: 450, 800
 
@@ -114,7 +115,7 @@ FloatLayout:
         target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ' '
         size_hint: None, None
         size: self.texture_size
-        pos_hint: {'x': .655 + root.title_y_decal, 'y': .775}
+        pos_hint: {'x': .655 + root.title_y_decal, 'y': .780}
         font_name: 'data/MyriadPro-Regular.otf'
         font_size: '40sp'
         interval: .05
