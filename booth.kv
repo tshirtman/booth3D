@@ -46,6 +46,11 @@ FloatLayout:
         right: base.right
         opacity: 0
 
+    Image:
+        source: 'data/ARTWORK/media_glass_container_vert.png'
+        center_x: self.size and carousel.center_x
+        y: carousel.y - 100
+
     TwizCarousel:
         id: carousel
         opacity: .5
