@@ -49,7 +49,7 @@ FloatLayout:
     Image:
         source: 'data/ARTWORK/media_glass_container_vert.png'
         center_x: self.size and carousel.center_x
-        y: carousel.y - 100
+        y: carousel.y - 80
 
     TwizCarousel:
         id: carousel
@@ -62,7 +62,7 @@ FloatLayout:
             for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
             for x in glob('data/media/*.png'): self.add_widget(Image(source=x))
             #for x in glob('data/media/*.mov'): self.add_widget(Video(source=x))
-        pos_hint: {'right': .9, 'center_y': .4 + root.carousel_y_decal}
+        pos_hint: {'right': .9, 'center_y': .4 - root.carousel_y_decal}
         size_hint: None, None
         size: 450, 800
 
@@ -93,25 +93,28 @@ FloatLayout:
                 rgba: 1, 1, 1, 1
 
         canvas.after:
+            Color:
+                rgba: C('C69C6D')[:3] + [.5]
+
             Line:
-                points: self.x - 250, self.top - self.line_interval * 2, self.x - 10, self.top - self.line_interval * 2
-                width: 1.5
+                points: self.x - 250, self.top - 5 - self.line_interval * 2, self.x - 10, self.top - 5 - self.line_interval * 2
+                width: 2.3
                 cap: 'none'
 
             Line:
-                points: self.x - 250, self.top - self.line_interval, self.x - 10, self.top - self.line_interval
-                width: 1.2
+                points: self.x - 250, self.top - 5 - self.line_interval, self.x - 10, self.top - 5 - self.line_interval
+                width: 1.7
                 cap: 'none'
 
             Line:
-                points: self.x - 250, self.top, self.x - 10, self.top
+                points: self.x - 249, self.top - 5, self.x - 9, self.top - 5
                 width: 1
                 cap: 'none'
 
         target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ' '
         size_hint: None, None
         size: self.texture_size
-        pos_hint: {'x': .65 - root.title_y_decal, 'y': .7}
+        pos_hint: {'x': .655 + root.title_y_decal, 'y': .775}
         font_name: 'data/MyriadPro-Regular.otf'
         font_size: '40sp'
         interval: .05
