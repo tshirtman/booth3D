@@ -17,9 +17,10 @@ import progressivelabel  # noqa
 Factory.register('ParticleSystem',
                  module='kivy.garden.particlesystem.particlesystem')
 
-SHOW_THRESHOLD = .2
+SHOW_THRESHOLD = 50
 HIDE_THRESHOLD = .02
-Z = - .25
+Z = - .20
+Z2 = - .25
 TIMEOUT = 0
 
 
@@ -68,10 +69,12 @@ class Booth(App):
 
         diff = max(diff, data[2] - 1.0)
 
-        if diff > SHOW_THRESHOLD or data[2] > Z:
+        print data[2]
+        if data[2] > Z:
+        #if diff > SHOW_THRESHOLD or data[2] > Z:
             self.show_container()
 
-        elif diff < HIDE_THRESHOLD and data[2] < Z:
+        elif diff < HIDE_THRESHOLD and data[2] < Z2:
             Clock.schedule_once(self.hide_container, TIMEOUT)
 
         if len(self.data) < 2:
@@ -104,19 +107,22 @@ class Booth(App):
             cont.opacity = 1
             cont.pos_y = -.5
             a = Animation(pos_y=.5, d=2, t='out_elastic')
-            a.bind(on_complete=self.display_title)
+            Clock.schedule_once(self.display_title, 1)
+            #a.bind(on_complete=self.display_title)
             a.start(cont)
         else:
             Animation(opacity=0, d=.5, t='out_quad').start(cont)
 
-    def display_title(self, animation, container, *args):
-        a = Animation(title_y_decal=0, d=.8, t='out_quad')
+    def display_title(self, *args):
+        a = Animation(title_y_decal=0, d=.4, t='out_quad')
         a.bind(on_complete=self.display_carousel)
-        a.start(container)
+        a.start(self.root.ids.container)
 
     def display_carousel(self, animation, container, *args):
-        #Animation.stop_all(container.ids.carousel, 'opacity')
-        Animation(carousel_y_decal=0, d=1, t='out_quad').start(container)
+        container.ids.carousel.flag = True
+        a = Animation(carousel_y_decal=0, d=1, t='out_quad')
+        a.bind(on_complete=container.ids.carousel.reset_flag)
+        a.start(container)
 
 
 class Container(RelativeLayout):
@@ -142,6 +148,10 @@ class TwizCarousel(Carousel):
                 self.load_previous()
 
     def reset_flag(self, *args):
+        Clock.unschedule(self._reset_flag)
+        Clock.schedule_once(self._reset_flag, .2)
+
+    def _reset_flag(self, *args):
         self.__flag = False
 
 if __name__ == '__main__':
