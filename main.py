@@ -99,16 +99,18 @@ class Booth(App):
         Clock.unschedule(self.hide_container)
         Animation.stop_all(cont)
         if self.display_container:
+            cont.carousel_y_decal = -2
+            cont.title_y_decal = -1
+            cont.opacity = 1
+            cont.pos_y = -.5
             a = Animation(pos_y=.5, d=2, t='out_elastic')
             a.bind(on_complete=self.display_title)
             a.start(cont)
         else:
-            Animation(carousel_y_decal=-2, d=.2, t='out_quad').start(cont)
-            Animation(title_y_decal=-1, d=1, t='out_quad').start(cont)
-            Animation(pos_y=-.5, t='out_quad').start(cont)
+            Animation(opacity=0, d=.5, t='out_quad').start(cont)
 
     def display_title(self, animation, container, *args):
-        a = Animation(title_y_decal=0, d=1, t='out_quad')
+        a = Animation(title_y_decal=0, d=.8, t='out_quad')
         a.bind(on_complete=self.display_carousel)
         a.start(container)
 
