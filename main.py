@@ -100,16 +100,21 @@ class Booth(App):
         Animation.stop_all(cont)
         if self.display_container:
             a = Animation(pos_y=.5, d=2, t='out_elastic')
-            a.bind(on_complete=self.display_carousel)
+            a.bind(on_complete=self.display_title)
             a.start(cont)
         else:
-            Animation.stop_all(cont.ids.carousel, 'opacity')
-            Animation(opacity=0, d=.2, t='out_quad').start(cont.ids.carousel)
+            Animation(carousel_y_decal=-2, d=.2, t='out_quad').start(cont)
+            Animation(title_y_decal=-1, d=1, t='out_quad').start(cont)
             Animation(pos_y=-.5, t='out_quad').start(cont)
 
+    def display_title(self, animation, container, *args):
+        a = Animation(title_y_decal=0, d=1, t='out_quad')
+        a.bind(on_complete=self.display_carousel)
+        a.start(container)
+
     def display_carousel(self, animation, container, *args):
-        Animation.stop_all(container.ids.carousel, 'opacity')
-        Animation(opacity=1, d=.5, t='out_quad').start(container.ids.carousel)
+        #Animation.stop_all(container.ids.carousel, 'opacity')
+        Animation(carousel_y_decal=0, d=1, t='out_quad').start(container)
 
 
 class Container(RelativeLayout):
