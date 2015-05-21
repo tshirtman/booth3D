@@ -19,7 +19,7 @@ Factory.register('ParticleSystem',
 
 SHOW_THRESHOLD = .2
 HIDE_THRESHOLD = .02
-Z = .25
+Z = - .25
 TIMEOUT = 0
 
 
@@ -68,10 +68,10 @@ class Booth(App):
 
         diff = max(diff, data[2] - 1.0)
 
-        if diff > SHOW_THRESHOLD or - (data[2] - Z) > SHOW_THRESHOLD:
+        if diff > SHOW_THRESHOLD or data[2] > Z:
             self.show_container()
 
-        elif diff < HIDE_THRESHOLD and - (data[2] - Z) < HIDE_THRESHOLD / 10:
+        elif diff < HIDE_THRESHOLD and data[2] < Z:
             Clock.schedule_once(self.hide_container, TIMEOUT)
 
         if len(self.data) < 2:
