@@ -19,7 +19,7 @@ Factory.register('ParticleSystem',
 
 SHOW_THRESHOLD = 50
 HIDE_THRESHOLD = .02
-Z = - .20
+Z = - .22
 Z2 = - .25
 TIMEOUT = 0
 
