@@ -109,7 +109,7 @@ class Booth(App):
 
         angle = data[-1] + .5 + self.turn_count
 
-        self.angle = angle
+        self.angle = -angle
 
     def show_container(self, *args):
         self.display_container = True
