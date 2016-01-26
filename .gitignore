@@ -1,0 +1,6 @@
+*.pyc
+*.c
+*.o
+*.so
+*.blend1
+libs/garden/garden.particlesystem/.cache/*

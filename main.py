@@ -17,11 +17,22 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.carousel import Carousel
 from kivy.factory import Factory
 
-from ddd import View  # noqa
 import progressivelabel  # noqa
 
-Factory.register('ParticleSystem',
-                 module='kivy.garden.particlesystem.particlesystem')
+Factory.register(
+    'ParticleSystem',
+    module='kivy.garden.particlesystem.particlesystem'
+)
+
+Factory.register(
+    'TransparentLayout',
+    module='panda_wrapper'
+)
+
+Factory.register(
+    'PandaView',
+    module='panda_wrapper'
+)
 
 SHOW_THRESHOLD = 50
 HIDE_THRESHOLD = .02
@@ -30,8 +41,8 @@ Z2 = - .25
 TIMEOUT = 0
 
 
-class BoothView(View):
-    pass
+#class BoothView(View):
+#    pass
 
 
 class Booth(App):
@@ -79,7 +90,6 @@ class Booth(App):
 
         diff = max(diff, data[2] - 1.0)
 
-        print data[2]
         if data[2] > Z:
         #if diff > SHOW_THRESHOLD or data[2] > Z:
             self.show_container()

@@ -5,6 +5,9 @@
 #:import HorizontalBlurEffect kivy.uix.effectwidget.HorizontalBlurEffect
 #:import VerticalBlurEffect kivy.uix.effectwidget.VerticalBlurEffect
 #:import C kivy.utils.get_color_from_hex
+#:import sin math.sin
+#:import cos math.cos
+#:import pi math.pi
 
 FloatLayout:
     ParticleSystem:
@@ -12,7 +15,6 @@ FloatLayout:
         pos_hint: {'pos': (.5, .5)}
         config: 'data/%splosion.pex' % ('ex' if app.display_container else 'im')
         on_config:
-            print self.config
             self.stop()
             self._parse_config(self.config)
             self.start()
@@ -20,12 +22,9 @@ FloatLayout:
     Container:
         id: container
         pos_x: .5
-        pos_y: -1
+        pos_y: -2
         pos_hint: {'center': (self.pos_x, self.pos_y)}
-    Label:
-        text: 'angle: %s\nangle: %s\ntours: %s,\nindex: %s' % (round(app.angle * 360, 2), round((app.angle % 1) * 360, 2), app.turn_count, container.ids.carousel.index)
-        size_hint: None, None
-        size: self.texture_size
+        opacity: 0
 
 <Container>:
     title_y_decal: -1
@@ -57,7 +56,7 @@ FloatLayout:
         opacity: .5
         on_index: self.reset_flag()
         angle: app.angle
-        angle_rotation_trigger: .1
+        angle_rotation_trigger: .15
         loop: True
         on_parent:
             for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
@@ -70,20 +69,46 @@ FloatLayout:
     #EffectWidget:
     #    effects: [HorizontalBlurEffect(), VerticalBlurEffect()]
         #background_color: 0, 0, 0, 0
-    View:
-        canvas.before:
-            Color:
-                rgba: 1, 1, 1, 1
+    TransparentLayout:
+        id: pandalayout
+        opacity: root.opacity
+        size_hint_x: None
+        width: 800
+        pos_hint: {'center_x': .5}
 
-        scene: 'data/potdecreme.obj'
-        display_all: True
-        #mode: 'lines'
-        #cam_rotation: (app.data[-1][-3] if app.data else 0), -app.angle * 360, (app.data[-1][-2] * 360 if app.data else 0)
-        cam_rotation: 10, -app.angle * 360, 0
-        cam_translation: 0, -3, -9
-        obj_scale: .6
-        light_sources:
-            {x: ([float(y) * 15 - 7.5 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
+        PandaView:
+            models:
+                (
+                'data/rose.egg',
+                'data/honey.egg',
+                'data/peach.egg',
+                )
+            angles: [app.angle for model in self.models]
+            cam_radius: 7
+            cam_pos: -self.cam_radius * sin(app.angle * 2*pi), self.cam_radius * cos(app.angle * 2*pi), 2.5
+            cam_lookat: 0, 0, 1.5
+            radius: 1.5
+            obj_pos:
+                (
+                (sin(-2./3*pi) * self.radius, cos(-2./3*pi) * self.radius, 0),
+                (                          0,                 self.radius, 0),
+                ( sin(2./3*pi) * self.radius,  cos(2./3*pi) * self.radius, 0),
+                )
+
+    #View:
+    #    canvas.before:
+    #        Color:
+    #            rgba: 1, 1, 1, 1
+
+    #    scene: 'data/potdecreme.obj'
+    #    display_all: True
+    #    #mode: 'lines'
+    #    #cam_rotation: (app.data[-1][-3] if app.data else 0), -app.angle * 360, (app.data[-1][-2] * 360 if app.data else 0)
+    #    cam_rotation: 10, -app.angle * 360, 0
+    #    cam_translation: 0, -3, -9
+    #    obj_scale: .6
+    #    light_sources:
+    #        {x: ([float(y) * 15 - 7.5 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
 
     ProgressiveLabel:
         id: title
