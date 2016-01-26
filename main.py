@@ -1,5 +1,11 @@
 # encoding: utf-8
 
+from kivy.config import Config
+Config.set('graphics', 'width', 1920)
+Config.set('graphics', 'height', 1080)
+Config.set('graphics', 'borderless', True)
+Config.set('graphics', 'show_cursor', False)
+
 from kivy.app import App
 from kivy.lib import osc
 from kivy.clock import Clock
@@ -39,19 +45,23 @@ class Booth(App):
 
     display_container = BooleanProperty(False)
 
-    def build(self):
+    def __init__(self):
+        super(Booth, self).__init__()
         self.titles_list = [
             u"DU PLAISIR POUR VOTRE PEAU",
             u"RÉALISEZ VOTRE DIAGNOSTIC",
             u"UNE PEAU IDÉALE",
             u"NOTRE SAVOIR FAIRE"
         ]
+
+
+    def build(self):
         super(Booth, self).build()
         self.oscid = oscid = osc.listen(ipAddr='0.0.0.0', port=8000)
         osc.bind(oscid, self.update_data, '/update')
         Clock.schedule_interval(lambda *x: osc.readQueue(oscid), 0)
+        self.root.ids.particle._parse_config('data/implosion.pex')
         self.root.ids.particle.start()
-        self.root.ids.particle.config = 'data/implosion.pex'
 
     def update_data(self, *args):
         # data: ax_d, ay_d, az_d, rz_d
