@@ -12,7 +12,7 @@
 FloatLayout:
     ParticleSystem:
         id: particle
-        pos_hint: {'pos': (.5, .5)}
+        pos_hint: {'pos': (.5, .05)}
         config: 'data/%splosion.pex' % ('ex' if app.display_container else 'im')
         on_config:
             self.stop()
@@ -22,61 +22,25 @@ FloatLayout:
     Container:
         id: container
         pos_x: .5
-        pos_y: -2
+        pos_y: .3
         pos_hint: {'center': (self.pos_x, self.pos_y)}
-        opacity: 0
 
-<Container>:
+<Container@RelativeLayout>:
     title_y_decal: -1
     carousel_y_decal: -2
-    Image:
-        id: base
-        size: self.texture_size
-        size_hint: None, None
-        source: 'data/ARTWORK/container_state2.png'
-        pos_hint: {'center_x': .62, 'center_y': .5}
-        opacity: 0
-
-    Image:
-        id: content
-        size: self.texture_size
-        size_hint: None, None
-        source: 'data/ARTWORK/container_state3_imagedisplay.png'
-        right: base.right
-        opacity: 0
-
-    Image:
-        source: 'data/ARTWORK/media_glass_container_vert.png'
-        center_x: self.size and carousel.center_x
-        y: carousel.y - 80
-        color: C('C69C6D')
-
-    TwizCarousel:
-        id: carousel
-        opacity: .5
-        on_index: self.reset_flag()
-        angle: app.angle
-        angle_rotation_trigger: .15
-        loop: True
-        on_parent:
-            for x in glob('data/media/*.jpg'): self.add_widget(Image(source=x))
-            for x in glob('data/media/*.png'): self.add_widget(Image(source=x))
-            #for x in glob('data/media/*.mov'): self.add_widget(Video(source=x))
-        pos_hint: {'right': .9, 'center_y': .35 - root.carousel_y_decal}
-        size_hint: None, None
-        size: 450, 800
 
     #EffectWidget:
     #    effects: [HorizontalBlurEffect(), VerticalBlurEffect()]
         #background_color: 0, 0, 0, 0
     TransparentLayout:
         id: pandalayout
-        opacity: root.opacity
+        opacity: pandaview.opacity
         size_hint_x: None
         width: 800
         pos_hint: {'center_x': .5}
 
-        PandaView:
+        Ingredients3DView:
+            id: pandaview
             models:
                 (
                 'data/rose.egg',
@@ -88,12 +52,20 @@ FloatLayout:
             cam_pos: -self.cam_radius * sin(app.angle * 2*pi), self.cam_radius * cos(app.angle * 2*pi), 2.5
             cam_lookat: 0, 0, 1.5
             radius: 1.5
+            obj_1_z: -7.5
+            obj_2_z: -7.5
+            obj_3_z: -7.5
+            # FIXME: See the hack in panda_wrapper to make everything a list
+            # FIXME: We need some abstraction of Panda's models!
+            # FIXME: Probably using base as global in panda_wrapper and exposing functions such as setPos or setHpr as Kivy properties
+            # FIXME: No metaprog required :-)
             obj_pos:
                 (
-                (sin(-2./3*pi) * self.radius, cos(-2./3*pi) * self.radius, 0),
-                (                          0,                 self.radius, 0),
-                ( sin(2./3*pi) * self.radius,  cos(2./3*pi) * self.radius, 0),
+                (sin(-2./3*pi) * self.radius, cos(-2./3*pi) * self.radius, self.obj_1_z),
+                (                          0,                 self.radius, self.obj_2_z),
+                ( sin(2./3*pi) * self.radius,  cos(2./3*pi) * self.radius, self.obj_3_z),
                 )
+            start_animation: app.display_container
 
     #View:
     #    canvas.before:
@@ -109,6 +81,19 @@ FloatLayout:
     #    obj_scale: .6
     #    light_sources:
     #        {x: ([float(y) * 15 - 7.5 for y in bin(x)[2:].rjust(3, '0')] + [1.0]) for x in range(8)}
+
+    Carousel:
+        id: carousel
+        index:
+            (
+            0 if 1/6. < app.angle % 1 < 1/2. else
+            2 if 1/2. < app.angle % 1 < 5/6. else
+            1
+            )
+
+        Widget:
+        Widget:
+        Widget:
 
     ProgressiveLabel:
         id: title
@@ -140,7 +125,7 @@ FloatLayout:
         target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ' '
         size_hint: None, None
         size: self.texture_size
-        pos_hint: {'x': .655 + root.title_y_decal, 'y': .780}
+        pos_hint: {'x': .5 + root.title_y_decal, 'y': .6}
         font_name: 'data/MyriadPro-Regular.otf'
         font_size: '40sp'
         interval: .05

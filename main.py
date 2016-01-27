@@ -9,13 +9,18 @@ Config.set('graphics', 'show_cursor', False)
 from kivy.app import App
 from kivy.lib import osc
 from kivy.clock import Clock
-from kivy.properties import ListProperty
-from kivy.properties import NumericProperty
-from kivy.properties import BooleanProperty
+from kivy.properties import (
+    BooleanProperty,
+    ListProperty,
+    NumericProperty,
+    ObjectProperty,
+)
 from kivy.animation import Animation
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.carousel import Carousel
 from kivy.factory import Factory
+
+from panda_wrapper import PandaView
 
 import progressivelabel  # noqa
 
@@ -29,10 +34,6 @@ Factory.register(
     module='panda_wrapper'
 )
 
-Factory.register(
-    'PandaView',
-    module='panda_wrapper'
-)
 
 SHOW_THRESHOLD = 50
 HIDE_THRESHOLD = .02
@@ -59,10 +60,9 @@ class Booth(App):
     def __init__(self):
         super(Booth, self).__init__()
         self.titles_list = [
-            u"DU PLAISIR POUR VOTRE PEAU",
-            u"RÉALISEZ VOTRE DIAGNOSTIC",
-            u"UNE PEAU IDÉALE",
-            u"NOTRE SAVOIR FAIRE"
+            u"Un parfum délicat",
+            u"Une peau idéale",
+            u"Peau lisse et soyeuse",
         ]
 
 
@@ -123,15 +123,11 @@ class Booth(App):
         Animation.stop_all(cont)
         if self.display_container:
             cont.carousel_y_decal = -2
-            cont.title_y_decal = -1
-            cont.opacity = 1
-            cont.pos_y = -.5
-            a = Animation(pos_y=.5, d=2, t='out_elastic')
+            cont.title_y_decal = -2
             Clock.schedule_once(self.display_title, 1)
-            #a.bind(on_complete=self.display_title)
-            a.start(cont)
         else:
-            Animation(opacity=0, d=.5, t='out_quad').start(cont)
+            Clock.unschedule(self.display_title)
+            Animation(title_y_decal=-2).start(cont)
 
     def display_title(self, *args):
         a = Animation(title_y_decal=0, d=.4, t='out_quad')
@@ -139,40 +135,47 @@ class Booth(App):
         a.start(self.root.ids.container)
 
     def display_carousel(self, animation, container, *args):
-        container.ids.carousel.flag = True
         a = Animation(carousel_y_decal=0, d=1, t='out_quad')
-        a.bind(on_complete=container.ids.carousel.reset_flag)
         a.start(container)
 
 
-class Container(RelativeLayout):
-    pass
+class Ingredients3DView(PandaView):
+    start_animation = BooleanProperty(False)
 
+    def __init__(self, **kwargs):
+        super(Ingredients3DView, self).__init__(**kwargs)
+        self.animation = None
 
-class TwizCarousel(Carousel):
-    angle = NumericProperty(0)
-    angle_offset = NumericProperty(0)
-    angle_rotation_trigger = NumericProperty(0)
-    __flag = BooleanProperty(False)
+    def on_start_animation(self, instance, value):
+        if self.animation:
+            self.animation.cancel(self)
+            self.animation = None
+        if(not value):
+            self.animation = animation = (
+                Animation(cam_radius=50, t='out_quad') &
+                Animation(opacity=0) &
+                Animation(
+                    obj_1_z=-7.5,
+                    obj_2_z=-7.5,
+                    obj_3_z=-7.5,
+                )
+            )
+            animation.bind(on_complete=self.stop_animation)
+            animation.start(self)
+        else:
+            self.stop_animation()
+            self.opacity = 1
+            self.animation = animation = (
+                Animation(obj_1_z=0, t='out_elastic') +
+                Animation(obj_2_z=0, t='out_elastic') +
+                Animation(obj_3_z=0, t='out_elastic')
+            )
+            animation.start(self)
 
-    def on_angle(self, *args):
-        if self.angle > self.angle_offset + self.angle_rotation_trigger:
-            self.angle_offset = self.angle
-            if not self.__flag:
-                self.__flag = True
-                self.load_next()
-        elif self.angle < self.angle_offset - self.angle_rotation_trigger:
-            self.angle_offset = self.angle
-            if not self.__flag:
-                self.__flag = True
-                self.load_previous()
+    def stop_animation(self, *args):
+        self.obj_1_z = self.obj_2_z = self.obj_3_z = -7.5
+        self.cam_radius = 7
 
-    def reset_flag(self, *args):
-        Clock.unschedule(self._reset_flag)
-        Clock.schedule_once(self._reset_flag, .2)
-
-    def _reset_flag(self, *args):
-        self.__flag = False
 
 if __name__ == '__main__':
     app = Booth()
