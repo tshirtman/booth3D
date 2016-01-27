@@ -155,9 +155,9 @@ class Ingredients3DView(PandaView):
                 Animation(cam_radius=50, t='out_quad') &
                 Animation(opacity=0) &
                 Animation(
-                    obj_1_z=-7.5,
-                    obj_2_z=-7.5,
-                    obj_3_z=-7.5,
+                    obj_1_z=-25,
+                    obj_2_z=-25,
+                    obj_3_z=-25,
                 )
             )
             animation.bind(on_complete=self.stop_animation)
@@ -166,14 +166,14 @@ class Ingredients3DView(PandaView):
             self.stop_animation()
             self.opacity = 1
             self.animation = animation = (
-                Animation(obj_1_z=0, t='out_elastic') +
-                Animation(obj_2_z=0, t='out_elastic') +
-                Animation(obj_3_z=0, t='out_elastic')
+                Animation(obj_1_z=0, t='out_elastic', d=2) +
+                Animation(obj_2_z=0, t='out_elastic', d=2) +
+                Animation(obj_3_z=0, t='out_elastic', d=2)
             )
             animation.start(self)
 
     def stop_animation(self, *args):
-        self.obj_1_z = self.obj_2_z = self.obj_3_z = -7.5
+        self.obj_1_z = self.obj_2_z = self.obj_3_z = -25
         self.cam_radius = 7
 
 
