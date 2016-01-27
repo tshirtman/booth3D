@@ -100,6 +100,10 @@ FloatLayout:
         line_interval: 8
         opacity: root.title_y_decal + 1
         canvas.before:
+            PushMatrix:
+            Scale:
+                x: -1
+                origin: self.x, 0
             Color:
                 rgba: 1, 1, 1, 1
 
@@ -121,6 +125,7 @@ FloatLayout:
                 points: self.x - 249, self.top - 5, self.x - 9, self.top - 5
                 width: 1
                 cap: 'none'
+            PopMatrix:
 
         target_text: app.titles_list[carousel.index] if carousel.index is not None and carousel.index <= len(app.titles_list) else ' '
         size_hint: None, None

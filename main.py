@@ -60,9 +60,9 @@ class Booth(App):
     def __init__(self):
         super(Booth, self).__init__()
         self.titles_list = [
-            u"Un parfum délicat",
-            u"Une peau idéale",
-            u"Peau lisse et soyeuse",
+            u"PARFUMÉE",
+            u"IDÉALE",
+            u"SOYEUSE",
         ]
 
 
