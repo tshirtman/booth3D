@@ -173,7 +173,7 @@ class Ingredients3DView(PandaView):
             animation.start(self)
 
     def stop_animation(self, *args):
-        self.obj_1_z = self.obj_2_z = self.obj_3_z = -25
+        self.obj_1_z = self.obj_2_z = self.obj_3_z = -7.5
         self.cam_radius = 7
 
 
