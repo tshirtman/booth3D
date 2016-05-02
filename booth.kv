@@ -42,31 +42,19 @@ HoloStandLayout:
 
         Ingredients3DView:
             id: pandaview
-            models:
+            cam_pos: 0, -7, 2.5
+            cam_lookat: 0, 0, 1.5
+            sources:
                 (
                 'data/rose.egg',
                 'data/honey.egg',
                 'data/peach.egg',
                 )
-            angles: [app.angle for model in self.models]
-            cam_radius: 7
-            cam_pos: -self.cam_radius * sin(app.angle * 2*pi), self.cam_radius * cos(app.angle * 2*pi), 2.5
-            cam_lookat: 0, 0, 1.5
+            angle = app.angle
+            obj_angles: [app.angle for model in self.models]
             radius: 1.5
+            obj_z: -5
             opacity: 0
-            obj_1_z: -5
-            obj_2_z: -5
-            obj_3_z: -5
-            # FIXME: See the hack in panda_wrapper to make everything a list
-            # FIXME: We need some abstraction of Panda's models!
-            # FIXME: Probably using base as global in panda_wrapper and exposing functions such as setPos or setHpr as Kivy properties
-            # FIXME: No metaprog required :-)
-            obj_pos:
-                (
-                (sin(-2./3*pi) * self.radius, cos(-2./3*pi) * self.radius, self.obj_1_z),
-                (                          0,                 self.radius, self.obj_2_z),
-                ( sin(2./3*pi) * self.radius,  cos(2./3*pi) * self.radius, self.obj_3_z),
-                )
             start_animation: app.display_container
 
     #View:

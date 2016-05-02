@@ -149,7 +149,6 @@ class Ingredients3DView(PandaView):
     def on_start_animation(self, instance, value):
         if self.animation:
             self.animation.cancel(self)
-            self.animation = None
         if(not value):
             self.animation = animation = (
                 Animation(cam_radius=50, t='out_quad') &

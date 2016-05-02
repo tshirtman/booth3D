@@ -17,6 +17,8 @@ from panda3d.core import (
     Vec4
 )
 
+from pandanode import Node
+
 # they are still issues when clearning the window, so don't report error
 # or panda will stop working
 #loadPrcFileData('', 'gl-force-no-error 1')
@@ -44,6 +46,7 @@ class ModelShowbase(ShowBase):
         self.setup_lights()
 
     def setup_lights(self):
+        render = self.render
         ambientLight = AmbientLight('ambient')
         ambientLight.setColor(Vec4(.5, .5, .5, 1))
         render.setLight(render.attachNewNode(ambientLight))
@@ -63,10 +66,10 @@ class ModelShowbase(ShowBase):
     def load_model(self, filename):
         model = self.loader.loadModel(filename)
         model.reparentTo(self.render)
-        return model
+        return Node(node=model)
 
-    def unload_model(self, model):
-        return self.loader.unloadModel(model)
+    def unload_model(self, node):
+        return self.loader.unloadModel(node.node)
 
     def setupMouse(*largs):
         # needed, otherwise panda will break because of glh provider that

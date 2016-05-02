@@ -13,13 +13,15 @@ from panda3d.core import (
 )
 
 from pandawrapper import ModelShowbase
+from pandanode import Node
 
-from kivy.clock import Clock, ClockBase
+from kivy.clock import Clock
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle, Callback, Fbo
 from kivy.properties import (
     ListProperty,
     NumericProperty,
+    ObjectProperty,
 )
 from kivy.graphics.opengl import glEnable, GL_DEPTH_TEST, GL_CULL_FACE
 from math import cos, sin
@@ -28,34 +30,49 @@ from math import cos, sin
 class PandaView(Widget):
     cam_pos = ListProperty([0, 0, 0])
     cam_lookat = ListProperty([0, 0, 0])
-    models = ListProperty([])   # Paths to models
-    _models = ListProperty([])  # Actual models
-    angles = ListProperty([])
+
+    node = ObjectProperty(None)
+    angle = NumericProperty(0)
+    radius = NumericProperty(0)
+    obj_z = NumericProperty(0)
+
+    sources = ListProperty([])
+    nodes = ListProperty([])
     obj_pos = ListProperty([])
+    obj_angles = ListProperty([])
 
     def __init__(self, **kwargs):
         super(PandaView, self).__init__(**kwargs)
         self.setup_panda()
+        trigger = Clock.create_trigger(self.update_obj_pos)
+        self.bind(
+            radius=trigger,
+            obj_z=trigger,
+        )
 
-    def on_models(self, instance, values):
-        for model in self._models:
-            model.remove_node()
+    def on_sources(self, instance, values):
+        self.node.remove_all_children()
         return self.load_models(values)
 
     def load_models(self, filenames):
         models = []
-        for model in filenames:
-            models.append(self.msb.load_model(model))
-        self._models = models
+        for i, path in enumerate(filenames):
+            model = self.msb.load_model(path)
+            model.reparent_to(self.node)
+            model.pos = self.obj_pos[i]
+            model.h = self.obj_angles[i]
+            models.append(model)
+        self.nodes = models
         return models
 
     def update_panda(self, *largs):
         self.canvas.ask_update()
 
     def setup_panda(self, *largs):
-        self.msb = ModelShowbase()
-        self.msb.camLens.setFov(52.0)
-        self.msb.camLens.setNearFar(1.0, 10000.0)
+        self.msb = msb = ModelShowbase()
+        msb.camLens.setFov(52.0)
+        msb.camLens.setNearFar(1.0, 10000.0)
+        self.node = Node(node=msb.render.attachNewNode())
 
         with self.canvas:
             self.fbo = Fbo(
@@ -123,10 +140,32 @@ class PandaView(Widget):
     def on_pos(self, instance, value):
         self.viewport.pos = value
 
-    def on_angles(self, instance, values):
-        for index, angle in enumerate(values):
-            self._models[index].setHpr(angle * -360, 0, 0)
-
     def on_obj_pos(self, instance, values):
         for index, pos in enumerate(values):
-            self._models[index].setPos(Vec3(*pos))
+            self.nodes[index].pos = Vec3(*pos)
+
+    def on_obj_angles(self, instance, values):
+        for index, angle in enumerate(values):
+            self.nodes[index].h = angle * -360.
+
+    def on_angle(self, instance, angle):
+        self.node.h = angle
+
+    def update_obj_pos(self, *args):
+        self.obj_pos = (
+            (
+                sin(-2./3*pi) * self.radius,
+                cos(-2./3*pi) * self.radius,
+                self.obj_z,
+            ),
+            (
+                0,
+                self.radius,
+                self.obj_z,
+            ),
+            (
+                sin(2./3*pi) * self.radius,
+                cos(2./3*pi) * self.radius,
+                self.obj_z,
+            ),
+        )
