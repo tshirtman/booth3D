@@ -1,5 +1,6 @@
 #:import Image kivy.uix.image.Image
 #:import Video kivy.uix.video.Video
+#:import HoloStandLayout holo_stand_layout.HoloStandLayout
 #:import glob glob.glob
 #:import FXAAEffect kivy.uix.effectwidget.FXAAEffect
 #:import HorizontalBlurEffect kivy.uix.effectwidget.HorizontalBlurEffect
@@ -9,7 +10,7 @@
 #:import cos math.cos
 #:import pi math.pi
 
-FloatLayout:
+HoloStandLayout:
     ParticleSystem:
         id: particle
         pos_hint: {'pos': (.5, .05)}
