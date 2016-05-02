@@ -1,4 +1,4 @@
-from panda3d.core import NodePath
+from panda3d.core import NodePath, Vec3
 
 from kivy.clock import Clock
 from kivy.event import EventDispatcher
@@ -22,7 +22,7 @@ class Node(EventDispatcher):
     h = NumericProperty(0)
     p = NumericProperty(0)
     r = NumericProperty(0)
-    hpr = ReferenceListProperty(x, y, z)
+    hpr = ReferenceListProperty(h, p, r)
 
     def __init__(self, **kwargs):
         super(Node, self).__init__(**kwargs)
@@ -33,14 +33,15 @@ class Node(EventDispatcher):
             node=trigger,
         )
 
-    def update_node(self, *args)
+    def update_node(self, *args):
         node = self.node
         if node:
-            node.setPos(self.pos)
-            node.setHpr(self.hpr)
+            node.setPos(Vec3(*self.pos))
+            node.setHpr(Vec3(*self.hpr))
 
     def remove_all_children(self):
-        self.node.removeAllChildren()
+        for child in self.node.getChildren():
+            child.removeNode()
 
     def reparent_to(self, node):
         self.node.reparentTo(node.node)

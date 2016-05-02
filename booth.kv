@@ -6,9 +6,6 @@
 #:import HorizontalBlurEffect kivy.uix.effectwidget.HorizontalBlurEffect
 #:import VerticalBlurEffect kivy.uix.effectwidget.VerticalBlurEffect
 #:import C kivy.utils.get_color_from_hex
-#:import sin math.sin
-#:import cos math.cos
-#:import pi math.pi
 
 HoloStandLayout:
     ParticleSystem:
@@ -50,11 +47,9 @@ HoloStandLayout:
                 'data/honey.egg',
                 'data/peach.egg',
                 )
-            angle = app.angle
-            obj_angles: [app.angle for model in self.models]
+            angle: app.angle
             radius: 1.5
             obj_z: -5
-            opacity: 0
             start_animation: app.display_container
 
     #View:

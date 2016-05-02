@@ -37,13 +37,15 @@ Factory.register(
 
 SHOW_THRESHOLD = 50
 HIDE_THRESHOLD = .02
-Z = - .22
-Z2 = - .25
+Z = 6 * 10 ** -3
+Z2 = 2 * 10 ** -3
 TIMEOUT = 0
 
 
-#class BoothView(View):
-#    pass
+def standard_deviation(l):
+    mean = sum(l) / len(l)
+    mean_sq = sum(x ** 2 for x in l) / len(l)
+    return (mean_sq - mean ** 2) ** .5
 
 
 class Booth(App):
@@ -56,6 +58,8 @@ class Booth(App):
     turn_count = NumericProperty(0)
 
     display_container = BooleanProperty(False)
+
+    stds = ListProperty([])
 
     def __init__(self):
         super(Booth, self).__init__()
@@ -82,19 +86,11 @@ class Booth(App):
         self.data = self.data[-20:]
         # check if any of the accelero detected a serious change over
         # the recent history
-        diff = 0
-        for d in range(3):
-            diff = max(diff,
-                       max(x[d] for x in self.data) -
-                       min(x[d] for x in self.data))
+        self.stds = [standard_deviation([x[d] for x in self.data]) for d in range(3)]
 
-        diff = max(diff, data[2] - 1.0)
-
-        if data[2] > Z:
-        #if diff > SHOW_THRESHOLD or data[2] > Z:
+        if min(self.stds) > Z:
             self.show_container()
-
-        elif diff < HIDE_THRESHOLD and data[2] < Z2:
+        elif max(self.stds) < Z2:
             Clock.schedule_once(self.hide_container, TIMEOUT)
 
         if len(self.data) < 2:
@@ -152,27 +148,26 @@ class Ingredients3DView(PandaView):
         if(not value):
             self.animation = animation = (
                 Animation(cam_radius=50, t='out_quad') &
-                Animation(opacity=0) &
-                Animation(
-                    obj_1_z=-25,
-                    obj_2_z=-25,
-                    obj_3_z=-25,
-                )
+                Animation(opacity=0)
             )
             animation.bind(on_complete=self.stop_animation)
             animation.start(self)
+            animation = Animation(z=-25)
+            for node in self.nodes:
+                animation.start(node)
         else:
             self.stop_animation()
             self.opacity = 1
-            self.animation = animation = (
-                Animation(obj_1_z=0, t='out_elastic') +
-                Animation(obj_2_z=0, t='out_elastic') +
-                Animation(obj_3_z=0, t='out_elastic')
-            )
-            animation.start(self)
+            for i, node in enumerate(self.nodes):
+                animation = (
+                    Animation(d=i) +
+                    Animation(z=0, t='out_elastic')
+                )
+                animation.start(node)
 
     def stop_animation(self, *args):
-        self.obj_1_z = self.obj_2_z = self.obj_3_z = -5
+        for node in self.nodes:
+            node.z = -5
         self.cam_radius = 7
 
 

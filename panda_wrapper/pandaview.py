@@ -24,7 +24,7 @@ from kivy.properties import (
     ObjectProperty,
 )
 from kivy.graphics.opengl import glEnable, GL_DEPTH_TEST, GL_CULL_FACE
-from math import cos, sin
+from math import sin, cos, pi
 
 
 class PandaView(Widget):
@@ -39,7 +39,6 @@ class PandaView(Widget):
     sources = ListProperty([])
     nodes = ListProperty([])
     obj_pos = ListProperty([])
-    obj_angles = ListProperty([])
 
     def __init__(self, **kwargs):
         super(PandaView, self).__init__(**kwargs)
@@ -59,8 +58,6 @@ class PandaView(Widget):
         for i, path in enumerate(filenames):
             model = self.msb.load_model(path)
             model.reparent_to(self.node)
-            model.pos = self.obj_pos[i]
-            model.h = self.obj_angles[i]
             models.append(model)
         self.nodes = models
         return models
@@ -72,7 +69,7 @@ class PandaView(Widget):
         self.msb = msb = ModelShowbase()
         msb.camLens.setFov(52.0)
         msb.camLens.setNearFar(1.0, 10000.0)
-        self.node = Node(node=msb.render.attachNewNode())
+        self.node = Node(node=msb.render.attachNewNode('PandaView'))
 
         with self.canvas:
             self.fbo = Fbo(
@@ -142,14 +139,13 @@ class PandaView(Widget):
 
     def on_obj_pos(self, instance, values):
         for index, pos in enumerate(values):
-            self.nodes[index].pos = Vec3(*pos)
-
-    def on_obj_angles(self, instance, values):
-        for index, angle in enumerate(values):
-            self.nodes[index].h = angle * -360.
+            self.nodes[index].pos = pos
 
     def on_angle(self, instance, angle):
-        self.node.h = angle
+        self.node.h = angle * -360. + 180
+
+        for node in self.nodes:
+            node.h = angle * -360.
 
     def update_obj_pos(self, *args):
         self.obj_pos = (
