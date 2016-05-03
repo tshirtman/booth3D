@@ -57,6 +57,7 @@ HoloStandLayout:
             2 if 1/2. < app.angle % 1 < 5/6. else
             1
             )
+        on_index: app.schedule_content()
 
         Widget:
         Widget:
@@ -102,3 +103,25 @@ HoloStandLayout:
         font_size: '40sp'
         interval: .05
         color: C('C69C6D')
+
+    Image:
+        id: content
+        pos_hint: {'x': .55, 'center_y': .4}
+        size_hint: .2, .2
+        opacity: 0
+
+        canvas.before:
+            PushMatrix:
+            Scale:
+                x: -1
+                origin: self.x, self.center_y
+        canvas.after:
+            PopMatrix:
+
+    Image:
+        id: glow
+        center: self.size and content.center
+        pos_hint: {'center': (.45, .4)}
+        size_hint: .75, .75
+        source: 'data/holo/glow.png'
+        opacity: 0

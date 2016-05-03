@@ -113,6 +113,42 @@ class Booth(App):
     def hide_container(self, *args):
         self.display_container = False
 
+    def schedule_content(self):
+        Clock.unschedule(self.show_content)
+        Clock.schedule_once(self.show_content, 3)
+        content = self.root.ids.container.ids.content
+        self.hide_content()
+
+    def show_content(self, *args):
+        container = self.root.ids.container
+        content = container.ids.content
+        content.source = 'data/holo/' + [
+            'rose',
+            'miel',
+            'abricot'
+        ][container.ids.carousel.index] + '.png'
+        Animation(opacity=1).start(content)
+        self.show_glow()
+
+    def hide_content(self, *args):
+        container = self.root.ids.container
+        content = container.ids.content
+        Animation(opacity=0, d=.35).start(content)
+        if content.opacity:
+            a = (
+                Animation(opacity=1, d=.25) +
+                Animation(opacity=0, d=.25)
+            )
+            a.start(container.ids.glow)
+
+    def show_glow(self):
+        container = self.root.ids.container
+        a = (
+            Animation(opacity=1, d=.35) +
+            Animation(opacity=0, d=.35)
+        )
+        a.start(container.ids.glow)
+
     def on_display_container(self, *args):
         cont = self.root.ids.container
         Clock.unschedule(self.hide_container)
@@ -121,9 +157,12 @@ class Booth(App):
             cont.carousel_y_decal = -2
             cont.title_y_decal = -2
             Clock.schedule_once(self.display_title, 1)
+            self.schedule_content()
         else:
             Clock.unschedule(self.display_title)
             Animation(title_y_decal=-2).start(cont)
+            Clock.unschedule(self.show_content)
+            self.hide_content()
 
     def display_title(self, *args):
         a = Animation(title_y_decal=0, d=.4, t='out_quad')
