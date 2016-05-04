@@ -114,10 +114,8 @@ class Booth(App):
         self.display_container = False
 
     def schedule_content(self):
-        Clock.unschedule(self.show_content)
-        Clock.schedule_once(self.show_content, 3)
-        content = self.root.ids.container.ids.content
         self.hide_content()
+        Clock.schedule_once(self.show_content, 3)
 
     def show_content(self, *args):
         container = self.root.ids.container
@@ -131,6 +129,7 @@ class Booth(App):
         self.show_glow()
 
     def hide_content(self, *args):
+        Clock.unschedule(self.show_content)
         container = self.root.ids.container
         content = container.ids.content
         Animation(opacity=0, d=.35).start(content)
@@ -161,7 +160,6 @@ class Booth(App):
         else:
             Clock.unschedule(self.display_title)
             Animation(title_y_decal=-2).start(cont)
-            Clock.unschedule(self.show_content)
             self.hide_content()
 
     def display_title(self, *args):
