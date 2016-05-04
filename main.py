@@ -125,6 +125,7 @@ class Booth(App):
             'miel',
             'abricot'
         ][container.ids.carousel.index] + '.png'
+        Animation.cancel_all(content, 'opacity')
         Animation(opacity=1).start(content)
         self.show_glow()
 
@@ -132,21 +133,25 @@ class Booth(App):
         Clock.unschedule(self.show_content)
         container = self.root.ids.container
         content = container.ids.content
+        Animation.cancel_all(content, 'opacity')
         Animation(opacity=0, d=.35).start(content)
         if content.opacity:
+            glow = container.ids.glow
+            Animation.cancel_all(glow, 'opacity')
             a = (
                 Animation(opacity=1, d=.25) +
                 Animation(opacity=0, d=.25)
             )
-            a.start(container.ids.glow)
+            a.start(glow)
 
     def show_glow(self):
-        container = self.root.ids.container
+        glow = self.root.ids.container.ids.glow
+        Animation.cancel_all(glow, 'opacity')
         a = (
             Animation(opacity=1, d=.35) +
             Animation(opacity=0, d=.35)
         )
-        a.start(container.ids.glow)
+        a.start(glow)
 
     def on_display_container(self, *args):
         cont = self.root.ids.container
