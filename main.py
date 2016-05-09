@@ -115,7 +115,8 @@ class Booth(App):
 
     def schedule_content(self):
         self.hide_content()
-        Clock.schedule_once(self.show_content, 3)
+        if self.display_container:
+            Clock.schedule_once(self.show_content, 3)
 
     def show_content(self, *args):
         container = self.root.ids.container
